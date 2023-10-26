@@ -29,7 +29,6 @@
             let max = Math.max(r, g, b), min = Math.min(r, g, b);
             let h, s, v = max;
             let d = max - min;
-
             s = max === 0 ? 0 : d / max;
             if (max === min) {
                 h = 0;
@@ -76,11 +75,8 @@
                 img.onload = function () {
                     const canvas = document.createElement('canvas');
                     const ctx = canvas.getContext('2d');
-
-                    // Canvasのサイズを画像のサイズに合わせる
                     canvas.width = img.width;
                     canvas.height = img.height;
-
                     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
                     const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -101,14 +97,19 @@
 
                     ctx.putImageData(imgData, 0, 0);
 
-                    // 画像を<img>要素に表示
                     const resultImage = document.getElementById('resultImage');
                     resultImage.src = canvas.toDataURL("image/png");
                     resultImage.style.display = 'block';
 
-                    // ダウンロードボタンを有効化
+                    // ダウンロード機能を追加
                     const downloadButton = document.getElementById('downloadButton');
                     downloadButton.disabled = false;
+                    downloadButton.addEventListener('click', function () {
+                        const link = document.createElement('a');
+                        link.download = originalFileName + "_BGremoved.png";
+                        link.href = canvas.toDataURL("image/png");
+                        link.click();
+                    });
                 };
 
                 img.src = event.target.result;
