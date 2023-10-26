@@ -1,9 +1,10 @@
-<!DOCTYPE html>
+ï»¿<!DOCTYPE html>
 <html>
 <head>
     <title>Green Screen Remover</title>
+    <meta charset="UTF-8"> <!-- æ–‡å­—åŒ–ã‘ã‚’é˜²ããŸã‚ã«UTF-8ã‚¨ãƒ³ã‚³ãƒ¼ãƒ‡ã‚£ãƒ³ã‚°ã‚’è¿½åŠ  -->
     <style>
-        /* ƒXƒ}[ƒgƒtƒHƒ“‚Ìê‡Aƒ{ƒ^ƒ“‚ğ‘å‚«‚­•\¦ */
+        /* ã‚¹ãƒãƒ¼ãƒˆãƒ•ã‚©ãƒ³ã®å ´åˆã€ãƒœã‚¿ãƒ³ã‚’å¤§ããè¡¨ç¤º */
         @media only screen and (max-width: 600px) {
             #downloadButton {
                 font-size: 20px;
@@ -13,14 +14,14 @@
 </head>
 <body>
     
-    <h2>‘I‘ğ‚µ‚½‰æ‘œ‚ÌƒOƒŠ[ƒ“ƒoƒbƒN‚ğ”²‚«‚Ü‚·D<br>‚¤‚Ü‚­”²‚¯‚È‚¢ê‡‚Í©•ª‚Åƒ\[ƒXƒR[ƒh˜M‚Á‚Ä’²®‚µ‚Ä‚­‚¾‚³‚¢D</h2>
-    <!-- ƒtƒ@ƒCƒ‹‘I‘ğƒ{ƒ^ƒ“ -->
+    <p>é¸æŠã—ãŸç”»åƒã®ã‚°ãƒªãƒ¼ãƒ³ãƒãƒƒã‚¯ã‚’æŠœãã¾ã™ï¼<br>ã†ã¾ãæŠœã‘ãªã„å ´åˆã¯è‡ªåˆ†ã§ã‚½ãƒ¼ã‚¹ã‚³ãƒ¼ãƒ‰å¼„ã£ã¦èª¿æ•´ã—ã¦ãã ã•ã„ï¼</p>
+    <!-- ãƒ•ã‚¡ã‚¤ãƒ«é¸æŠãƒœã‚¿ãƒ³ -->
     <input type="file" id="imageInput">
 
-    <!-- ƒ_ƒEƒ“ƒ[ƒhƒ{ƒ^ƒ“ -->
+    <!-- ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ãƒœã‚¿ãƒ³ -->
     <button id="downloadButton" disabled>Download Processed Image</button>
 
-    <!-- ‰æ‘œ‚ğ•\¦‚·‚é‚½‚ß‚Ì<img>—v‘f -->
+    <!-- ç”»åƒã‚’è¡¨ç¤ºã™ã‚‹ãŸã‚ã®<img>è¦ç´  -->
     <img id="resultImage" style="display: none; max-width: 100%; max-height: 100%;" />
 
     <script>
@@ -103,7 +104,7 @@
                     resultImage.src = canvas.toDataURL("image/png");
                     resultImage.style.display = 'block';
 
-                    // ƒ_ƒEƒ“ƒ[ƒh‹@”\‚ğ’Ç‰Á
+                    // ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰æ©Ÿèƒ½ã‚’è¿½åŠ 
                     const downloadButton = document.getElementById('downloadButton');
                     downloadButton.disabled = false;
                     downloadButton.addEventListener('click', function () {
