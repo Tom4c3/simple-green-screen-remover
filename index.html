@@ -5,7 +5,10 @@
 </head>
 <body>
     <input type="file" id="imageInput">
-    <canvas id="canvas" width="640" height="480"></canvas>
+    <!-- 画像を表示するための<img>要素 -->
+    <img id="resultImage" style="display: none; max-width: 100%; max-height: 100%;" />
+
+    <!-- ダウンロードボタン -->
     <button id="downloadButton" disabled>Download Processed Image</button>
 
     <script>
@@ -61,7 +64,7 @@
             reader.onload = function (event) {
                 const img = new Image();
                 img.onload = function () {
-                    const canvas = document.getElementById('canvas');
+                    const canvas = document.createElement('canvas');
                     const ctx = canvas.getContext('2d');
 
                     // Canvasのサイズを画像のサイズに合わせる
@@ -87,22 +90,32 @@
                     fillSmallHoles(pixels, canvas.width, canvas.height);
 
                     ctx.putImageData(imgData, 0, 0);
-                    document.getElementById('downloadButton').disabled = false;
+
+                    // 画像を<img>要素に表示
+                    const resultImage = document.getElementById('resultImage');
+                    resultImage.src = canvas.toDataURL("image/png");
+                    resultImage.style.display = 'block';
+
+                    // ダウンロードボタンを有効化
+                    const downloadButton = document.getElementById('downloadButton');
+                    downloadButton.disabled = false;
+
+                    // ダウンロードボタンのクリックイベントを設定
+                    downloadButton.addEventListener('click', function () {
+                        // Canvasから画像データを取得し、ダウンロード用リンクを生成
+                        const downloadLink = document.createElement('a');
+                        downloadLink.setAttribute('download', originalFileName + '_GBremoved.png');
+                        downloadLink.setAttribute('href', canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"));
+
+                        // ダウンロードリンクをクリック
+                        downloadLink.click();
+                    });
                 };
 
                 img.src = event.target.result;
             };
 
             reader.readAsDataURL(file);
-        });
-
-        document.getElementById('downloadButton').addEventListener('click', function () {
-            const canvas = document.getElementById('canvas');
-            const imgData = canvas.toDataURL("image/png");
-
-            // 画像を表示
-            const imagePopup = window.open("", "_blank");
-            imagePopup.document.write('<img src="' + imgData + '" />');
         });
     </script>
 </body>
