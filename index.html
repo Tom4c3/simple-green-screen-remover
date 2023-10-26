@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Green Screen Remover</title>
+</head>
+<body>
+    <input type="file" id="imageInput">
+    <canvas id="canvas" width="640" height="480"></canvas>
+    <button id="downloadButton" disabled>Download Processed Image</button>
+
+    <script>
+        let originalFileName = "";
+
+        function rgbToHsv(r, g, b) {
+            r /= 255, g /= 255, b /= 255;
+            let max = Math.max(r, g, b), min = Math.min(r, g, b);
+            let h, s, v = max;
+            let d = max - min;
+
+            s = max === 0 ? 0 : d / max;
+            if (max === min) {
+                h = 0;
+            } else {
+                switch (max) {
+                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                    case g: h = (b - r) / d + 2; break;
+                    case b: h = (r - g) / d + 4; break;
+                }
+                h /= 6;
+            }
+            return [h, s, v];
+        }
+
+        function fillSmallHoles(pixels, width, height) {
+            for (let y = 1; y < height - 1; y++) {
+                for (let x = 1; x < width - 1; x++) {
+                    const i = (y * width + x) * 4;
+                    if (pixels[i + 3] === 0) {
+                        let opaqueNeighbors = 0;
+                        for (let dy = -1; dy <= 1; dy++) {
+                            for (let dx = -1; dx <= 1; dx++) {
+                                const ni = ((y + dy) * width + (x + dx)) * 4;
+                                if (pixels[ni + 3] === 255) {
+                                    opaqueNeighbors++;
+                                }
+                            }
+                        }
+                        if (opaqueNeighbors === 8) {
+                            pixels[i + 3] = 255;
+                        }
+                    }
+                }
+            }
+        }
+
+        document.getElementById('imageInput').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            originalFileName = file.name.split('.').slice(0, -1).join('.');
+            const reader = new FileReader();
+
+            reader.onload = function (event) {
+                const img = new Image();
+                img.onload = function () {
+                    const canvas = document.getElementById('canvas');
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+                    const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    const pixels = imgData.data;
+
+                    for (let i = 0; i < pixels.length; i += 4) {
+                        const r = pixels[i];
+                        const g = pixels[i + 1];
+                        const b = pixels[i + 2];
+                        const [h, s, v] = rgbToHsv(r, g, b);
+
+                        if ((h >= 0.16 && h <= 0.5) && (s >= 0.2 && s <= 1) && (v >= 0.2 && v <= 1)) {
+                            pixels[i + 3] = 0;
+                        }
+                    }
+
+                    fillSmallHoles(pixels, canvas.width, canvas.height);
+
+                    ctx.putImageData(imgData, 0, 0);
+                    document.getElementById('downloadButton').disabled = false;
+                };
+
+                img.src = event.target.result;
+            };
+
+            reader.readAsDataURL(file);
+        });
+
+        document.getElementById('downloadButton').addEventListener('click', function () {
+            const canvas = document.getElementById('canvas');
+            const downloadLink = document.createElement('a');
+            downloadLink.setAttribute('download', originalFileName + '_GBremoved.png');
+            downloadLink.setAttribute('href', canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"));
+            downloadLink.click();
+        });
+    </script>
+</body>
+</html>
+
