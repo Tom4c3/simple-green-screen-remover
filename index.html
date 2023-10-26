@@ -2,14 +2,24 @@
 <html>
 <head>
     <title>Green Screen Remover</title>
+    <style>
+        /* スマートフォンの場合、ボタンを大きく表示 */
+        @media only screen and (max-width: 600px) {
+            #downloadButton {
+                font-size: 20px;
+            }
+        }
+    </style>
 </head>
 <body>
+    <!-- ファイル選択ボタン -->
     <input type="file" id="imageInput">
-    <!-- 画像を表示するための<img>要素 -->
-    <img id="resultImage" style="display: none; max-width: 100%; max-height: 100%;" />
 
     <!-- ダウンロードボタン -->
     <button id="downloadButton" disabled>Download Processed Image</button>
+
+    <!-- 画像を表示するための<img>要素 -->
+    <img id="resultImage" style="display: none; max-width: 100%; max-height: 100%;" />
 
     <script>
         let originalFileName = "";
@@ -99,17 +109,6 @@
                     // ダウンロードボタンを有効化
                     const downloadButton = document.getElementById('downloadButton');
                     downloadButton.disabled = false;
-
-                    // ダウンロードボタンのクリックイベントを設定
-                    downloadButton.addEventListener('click', function () {
-                        // Canvasから画像データを取得し、ダウンロード用リンクを生成
-                        const downloadLink = document.createElement('a');
-                        downloadLink.setAttribute('download', originalFileName + '_GBremoved.png');
-                        downloadLink.setAttribute('href', canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"));
-
-                        // ダウンロードリンクをクリック
-                        downloadLink.click();
-                    });
                 };
 
                 img.src = event.target.result;
