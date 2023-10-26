@@ -53,37 +53,6 @@
             }
         }
 
-        // 画像を長押しして保存メニューを表示
-        canvas.addEventListener('touchstart', function (e) {
-            if (e.touches.length === 1) {
-                e.preventDefault();
-            }
-        });
-
-        canvas.addEventListener('touchend', function (e) {
-            if (e.changedTouches.length === 1) {
-                const touch = e.changedTouches[0];
-                const touchEndX = touch.clientX;
-                const touchEndY = touch.clientY;
-                const touchDistance = Math.sqrt(
-                    Math.pow(touchEndX - touchStartX, 2) +
-                    Math.pow(touchEndY - touchStartY, 2)
-                );
-
-                // タッチ距離が短い場合は保存メニューを表示
-                if (touchDistance < 10) {
-                    const imgData = canvas.toDataURL("image/png");
-                    const downloadLink = document.createElement('a');
-                    downloadLink.setAttribute('download', originalFileName + '_GBremoved.png');
-                    downloadLink.setAttribute('href', imgData);
-                    downloadLink.style.display = 'none';
-                    document.body.appendChild(downloadLink);
-                    downloadLink.click();
-                    document.body.removeChild(downloadLink);
-                }
-            }
-        });
-
         document.getElementById('imageInput').addEventListener('change', function (e) {
             const file = e.target.files[0];
             originalFileName = file.name.split('.').slice(0, -1).join('.');
@@ -129,12 +98,12 @@
 
         document.getElementById('downloadButton').addEventListener('click', function () {
             const canvas = document.getElementById('canvas');
-            const downloadLink = document.createElement('a');
-            downloadLink.setAttribute('download', originalFileName + '_GBremoved.png');
-            downloadLink.setAttribute('href', canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"));
-            downloadLink.click();
+            const imgData = canvas.toDataURL("image/png");
+
+            // 画像を表示
+            const imagePopup = window.open("", "_blank");
+            imagePopup.document.write('<img src="' + imgData + '" />');
         });
     </script>
 </body>
 </html>
-
